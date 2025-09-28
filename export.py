@@ -45,13 +45,13 @@ def export_json_to_excel(json_path, excel_path):
     ws.append(headers)
 
     color_map = {
-        'S+': 'FFD700', # Gold
-        'S': 'C0C0C0',  # Silver
-        'A': '00FF00',  # Green
-        'B': '00BFFF',  # Blue
-        'C': 'FF8C00',  # Dark Orange
-        'D': 'FF69B4',  # Pink
-        'F': 'FF0000',  # Red
+        'S+': '8B0000', # Dark Red
+        'S': 'FF0000',  # Red
+        'A': 'FFA500',  # Orange
+        'B': 'FFFF00',  # Yellow
+        'C': '90EE90',  # Light Green
+        'D': '00FF00',  # Green
+        'F': '00BFFF',  # Blue
         '-': 'FFFFFF',  # White
     }
 
@@ -65,11 +65,10 @@ def export_json_to_excel(json_path, excel_path):
             if val in color_map:
                 cell.fill = PatternFill(start_color=color_map[val], end_color=color_map[val], fill_type="solid")
 
-    ws.auto_filter.ref = ws.dimensions
-    wb.save(excel_path)
+        # SAVE (overwrite safely)
+    tmp_path = excel_path + ".tmp"
+    wb.save(tmp_path)              # write to a temp file first
+    wb.replace(tmp_path, excel_path)  # atomically replace (overwrites if exists)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python export_herotier_to_excel.py <input_json> <output_excel>")
-        sys.exit(1)
-    export_json_to_excel(sys.argv[1], sys.argv[2])
+    export_json_to_excel("herotier_full.json", "herotier_full.xlsx")
